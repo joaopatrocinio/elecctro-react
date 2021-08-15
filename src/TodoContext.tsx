@@ -3,5 +3,8 @@ import { TodosContextState } from "./types";
 
 export const TodoContext = createContext<TodosContextState>({
     todos: [],
-    addTodo: () => {}
+    getCounter: () => 0,
+    addTodo: () => {},
+    removeTodo: () => {},
+    updateTodo: () => {}
 });
