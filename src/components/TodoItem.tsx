@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { TodoContext } from '../TodoContext';
+import { TodoContext } from '../TodoProvider';
 import { Todo, TodosContextState } from '../types';
 
 const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
@@ -20,6 +20,7 @@ const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
     };
 
     const handleRemove:React.MouseEventHandler<HTMLButtonElement> = () => {
+        if (id !== undefined)
         removeTodo(id);
     }
 

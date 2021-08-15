@@ -1,12 +1,12 @@
 import logo from '../logo.svg';
 import React, { useContext, useState } from 'react';
-import { TodoContext } from '../TodoContext';
+import { TodoContext } from '../TodoProvider';
 import { TodosContextState } from '../types';
 
 const CreateTodo:React.FC = () => {
 
     const [newTodo, setNewTodo] = useState<string>('');
-    const { getCounter, addTodo } = useContext<TodosContextState>(TodoContext);
+    const { addTodo } = useContext<TodosContextState>(TodoContext);
 
     const handleChange:React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setNewTodo(e.target.value);
@@ -17,11 +17,8 @@ const CreateTodo:React.FC = () => {
 
         if (newTodo !== '') {
             addTodo({
-                id: getCounter(),
-                state: 'INCOMPLETE',
                 description: newTodo
             });
-    
             setNewTodo('');
         }
 
