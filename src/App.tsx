@@ -24,9 +24,10 @@ const App:React.FC = () => {
   };
 
   const updateTodo = (todo: Todo) => {
-    let index = todos.findIndex(x=> x.id === todo.id);
-    todos[index] = todo;
-    setTodos(todos);
+    const index = todos.findIndex(x=> x.id === todo.id);
+    const newTodos = [...todos];
+    newTodos[index] = todo;
+    setTodos(newTodos);
   };
 
   return (

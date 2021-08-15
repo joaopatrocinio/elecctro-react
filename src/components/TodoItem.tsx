@@ -5,6 +5,9 @@ import { Todo, TodosContextState } from '../types';
 const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
 
     const [isChecked, setIsChecked] = useState<boolean>(state === 'COMPLETE');
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [newDescription, setNewDescription] = useState<string>(description);
+
     const { removeTodo, updateTodo } = useContext<TodosContextState>(TodoContext);
 
     const handleOnChange = () => {
@@ -21,11 +24,21 @@ const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
     }
 
     const handleUpdate:React.MouseEventHandler<HTMLButtonElement> = () => {
-        updateTodo({
-            id,
-            state: 'COMPLETE',
-            description: 'Update title'
-        });
+        if (!isEditing) {
+            setIsEditing(true);
+        }
+        else {
+            updateTodo({
+                id,
+                state,
+                description: newDescription
+            });
+            setIsEditing(false);
+        }
+    }
+
+    const handleUpdateChange:React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        setNewDescription(e.target.value);
     }
 
     return (
@@ -35,9 +48,14 @@ const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
                 className="flex-none cursor-pointer"
                 checked={isChecked}
                 onChange={handleOnChange} />
-            <span className="flex-grow cursor-pointer" onClick={handleOnChange} >{ description }</span>
+            { isEditing &&
+                <input className="flex-grow p-2 rounded-xl" type="text" value={newDescription} onChange={handleUpdateChange}></input>
+            }
+            { !isEditing &&   
+                <span className="flex-grow cursor-pointer" onClick={handleOnChange} >{ description }</span>
+            }
             <div className="flex-none">
-                <button onClick={handleUpdate}>Edit</button>
+                <button onClick={handleUpdate}>{ !isEditing ? 'Edit' : 'Save' }</button>
                 <span> / </span>
                 <button onClick={handleRemove}>Delete</button>
             </div>

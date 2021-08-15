@@ -12,18 +12,23 @@ const CreateTodo:React.FC = () => {
         setNewTodo(e.target.value);
     }
 
-    const handleAddTodo:React.MouseEventHandler<HTMLButtonElement> = () => {
-        addTodo({
-            id: getCounter(),
-            state: 'INCOMPLETE',
-            description: newTodo
-        });
+    const handleAddTodo:React.FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault()
 
-        setNewTodo('');
+        if (newTodo !== '') {
+            addTodo({
+                id: getCounter(),
+                state: 'INCOMPLETE',
+                description: newTodo
+            });
+    
+            setNewTodo('');
+        }
+
     }
 
     return (
-        <div className="flex flex-row flex-nowrap items-center bg-gray-100 p-4 gap-4">
+        <form className="flex flex-row flex-nowrap items-center bg-gray-100 p-4 gap-4" onSubmit={handleAddTodo}>
             <div className="flex-none">
                 <img src={logo} alt="Logo" className="w-24" />
             </div>
@@ -31,9 +36,9 @@ const CreateTodo:React.FC = () => {
                 <input type="text" className="w-full px-4 py-2 rounded-xl" placeholder="Write new task here… " value={newTodo} onChange={handleChange}/>
             </div>
             <div className="flex-none">
-                <button className="rounded-xl px-4 py-2 bg-gray-200" onClick={handleAddTodo}>Create</button>
+                <button className="rounded-xl px-4 py-2 bg-gray-200" type="submit">Create</button>
             </div>
-        </div>
+        </form>
     );
 }
 

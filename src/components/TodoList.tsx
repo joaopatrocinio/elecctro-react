@@ -3,6 +3,14 @@ import { TodoContext } from '../TodoContext';
 import { Todo, TodosContextState } from '../types';
 import TodoItem from './TodoItem';
 
+function filterByDate(a:Todo, b:Todo) {
+    return a.id > b.id ? 1 : -1;
+}
+
+function filterByName(a:Todo, b:Todo) {
+    return a.description.localeCompare(b.description);
+}
+
 const TodoList:React.FC = () => {
 
     const { todos } = useContext<TodosContextState>(TodoContext);
@@ -11,7 +19,7 @@ const TodoList:React.FC = () => {
     const [hideCompleted, setHideCompleted] = useState<boolean>(false);
     const [filter, setFilter] = useState<string>('date');
 
-    // Load todos into items state (NOT WORKING WHEN ITEM UPDATES)
+    // Load To-do's into state to allow temporary data manipulation
     useEffect(() => {
         setItems(todos);
     }, [todos]);
@@ -29,14 +37,18 @@ const TodoList:React.FC = () => {
 
     const handleFilterChange:React.MouseEventHandler<HTMLHeadingElement> = () => {
         // Cycle filter options (date -> A-Z -> Z-A)
-        if (filter === 'date') setFilter('A-Z');
-        else if (filter === 'A-Z') setFilter('Z-A');
-        else if (filter === 'Z-A') setFilter('date');
-
-        // Update items based on filter
-        if (filter === 'date') setItems(items.sort((a, b) => a.id > b.id ? a.id : b.id));
-        else if (filter === 'A-Z') setItems(items.sort((a, b) => a.description.localeCompare(b.description)).reverse());
-        else if (filter === 'Z-A') setItems(items.sort((a, b) => a.description.localeCompare(b.description)));
+        if (filter === 'date') {
+            setItems(items.sort(filterByName));
+            setFilter('A-Z');
+        }
+        else if (filter === 'A-Z') {
+            setItems(items.sort(filterByName).reverse());
+            setFilter('Z-A');
+        }
+        else if (filter === 'Z-A') {
+            setItems(items.sort(filterByDate));
+            setFilter('date');
+        }
     }
 
     return (
