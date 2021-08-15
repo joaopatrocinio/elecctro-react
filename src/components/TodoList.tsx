@@ -35,8 +35,8 @@ const TodoList:React.FC = () => {
 
         // Update items based on filter
         if (filter === 'date') setItems(items.sort((a, b) => a.id > b.id ? a.id : b.id));
-        else if (filter === 'A-Z') setItems(items.sort((a, b) => a.description.localeCompare(b.description)));
-        else if (filter === 'Z-A') setItems(items.sort((a, b) => a.description.localeCompare(b.description)).reverse());
+        else if (filter === 'A-Z') setItems(items.sort((a, b) => a.description.localeCompare(b.description)).reverse());
+        else if (filter === 'Z-A') setItems(items.sort((a, b) => a.description.localeCompare(b.description)));
     }
 
     return (
