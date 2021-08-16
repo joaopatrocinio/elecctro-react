@@ -1,8 +1,10 @@
 import React, { createContext, useState, FC } from "react";
-import { Todo, TodosContextState } from "./types";
+import { GetTodoQuery, Todo, TodosContextState } from "./types";
 
 const contextDefaultValues: TodosContextState = {
     todos: [],
+    query: { filter: 'ALL', orderBy: 'CREATED_AT' },
+    setQuery: () => {},
     addTodo: () => {},
     removeTodo: () => {},
     updateTodo: () => {},
@@ -15,6 +17,7 @@ export const TodoContext = createContext<TodosContextState>(
 
 const TodoProvider: FC = ({ children }) => {
     const [todos, setTodos] = useState<Todo[]>(contextDefaultValues.todos);
+    const [query, setQuery] = useState<GetTodoQuery>(contextDefaultValues.query);
 
     const addTodo = async (newTodo: Todo) => {
         await fetch("http://localhost:3001/todos", {
@@ -25,7 +28,7 @@ const TodoProvider: FC = ({ children }) => {
             method: 'POST',
             body: JSON.stringify(newTodo)
         });
-        refreshTodos();
+        refreshTodos(query);
     }
     
     const removeTodo = async (id: number) => {
@@ -36,7 +39,7 @@ const TodoProvider: FC = ({ children }) => {
                 'Content-Type': 'application/json'
             }
         })
-        refreshTodos();
+        refreshTodos(query);
     };
 
     const updateTodo = async (todo: Todo) => {
@@ -50,11 +53,17 @@ const TodoProvider: FC = ({ children }) => {
             },
             body: JSON.stringify(todo)
         })
-        refreshTodos();
+        refreshTodos(query);
     };
 
-    const refreshTodos = async () => {
-        const response = await fetch("http://localhost:3001/todos")
+    const refreshTodos = async (query:GetTodoQuery) => {
+        const response = await fetch("http://localhost:3001/todos?" + new URLSearchParams(query), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
         const todos = await response.json();
         setTodos(todos);
     }
@@ -63,6 +72,8 @@ const TodoProvider: FC = ({ children }) => {
         <TodoContext.Provider
             value={{
                 todos,
+                query,
+                setQuery,
                 addTodo,
                 removeTodo,
                 updateTodo,
