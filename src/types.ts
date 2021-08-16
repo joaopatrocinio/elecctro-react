@@ -18,3 +18,16 @@ export type TodosContextState = {
     updateTodo: (todo: Todo) => void,
     refreshTodos: (query: GetTodoQuery) => void
 }
+
+export type User = {
+    email: string,
+    password?: string,
+    name?: string
+}
+
+export type AuthContextState = {
+    isAuthenticated: boolean,
+    getUser: () => void,
+    login: (user:User) => void,
+    logout: () => void
+}

@@ -1,17 +1,25 @@
 import React from 'react';
-import CreateTodo from './components/CreateTodo';
-import TodoList from './components/TodoList';
-import TodoProvider from './TodoProvider';
+import Todos from './pages/Todos';
+import Login from './pages/Login';
+import NavigationBar from './components/NavigationBar';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+} from 'react-router-dom';
 
 const App:React.FC = () => {
 
   return (
-    <TodoProvider>
-      <div className="App container mx-auto my-4 font-mono">
-        <CreateTodo></CreateTodo>
-        <TodoList></TodoList>
-      </div>
-    </TodoProvider>
+    <BrowserRouter>
+      
+      <NavigationBar />
+
+      <Switch>
+        <Route path="/" exact component={ Todos } />
+        <Route path="/login" exact component={ Login } />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
