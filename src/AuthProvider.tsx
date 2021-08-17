@@ -4,8 +4,8 @@ import { User, AuthContextState } from "./types";
 const contextDefaultValues: AuthContextState = {
     isAuthenticated: false,
     user: {
-        email: "DEFAULT",
-        name: "DEFAULT"
+        email: '',
+        name: ''
     },
     refreshUser: () => {},
     login: (user:User) => {},
@@ -23,14 +23,23 @@ const AuthProvider: FC = ({ children }) => {
     const [token, setToken] = useState<string>('');
 
     useEffect(() => {
-        if (localStorage.getItem('token') !== null) {
+
+        const tkn = localStorage.getItem('token');
+        if (tkn !== null) {
+            setToken(tkn);
             setIsAuthenticated(true);
-            setToken(token);
-            refreshUser();
         }
     }, []);
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            localStorage.setItem('token', token);
+            refreshUser();
+        }
+    }, [isAuthenticated, token]);
+
     const refreshUser = async () => {
+        
         if (isAuthenticated) {
             const response = await fetch("http://localhost:3001/me", {
                 method: 'GET',
@@ -42,7 +51,6 @@ const AuthProvider: FC = ({ children }) => {
             });
 
             const { email, name } = await response.json();
-            console.log(email);
             setUser({ email, name });
         }
     }
@@ -61,19 +69,17 @@ const AuthProvider: FC = ({ children }) => {
         const { token } = await response.json();
 
         if (token !== undefined) {
-            setIsAuthenticated(true);
             setToken(token);
-            localStorage.setItem('token', token);
-            refreshUser();
+            setIsAuthenticated(true);
         }
         
     }
 
     const logout = () => {
+
         setToken('');
         localStorage.removeItem('token');
         setIsAuthenticated(false);
-        refreshUser();
     }
 
     return (

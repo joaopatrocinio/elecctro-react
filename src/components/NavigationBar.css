@@ -1,0 +1,8 @@
+a {
+    border-bottom: 1px solid black;
+    padding-bottom: 0.25em;
+}
+
+a:hover {
+    font-weight: bold;
+}

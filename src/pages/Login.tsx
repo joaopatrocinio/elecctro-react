@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Redirect } from 'react-router';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../AuthProvider';
 import { AuthContextState } from '../types';
 
@@ -8,14 +8,18 @@ const Login:React.FC = () => {
     const { login, isAuthenticated } = useContext<AuthContextState>(AuthContext);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const history = useHistory();
+    
+    useEffect(() => {
+        if (isAuthenticated) {
+            history.push('/');
+        }
+    }, [isAuthenticated]);
 
     const handleSubmit:React.FormEventHandler<HTMLFormElement> = async (e) => {
 
         e.preventDefault();
-        await login({ email, password });
-        if (isAuthenticated) {
-            return <Redirect to="/"></Redirect>
-        }
+        login({ email, password });
     };
 
     const handleEmailChange:React.ChangeEventHandler<HTMLInputElement> = (e) => {
