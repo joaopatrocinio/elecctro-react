@@ -27,7 +27,8 @@ export type User = {
 
 export type AuthContextState = {
     isAuthenticated: boolean,
-    getUser: () => void,
+    user: User,
+    refreshUser: () => void,
     login: (user:User) => void,
     logout: () => void
 }

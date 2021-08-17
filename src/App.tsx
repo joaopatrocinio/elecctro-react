@@ -2,6 +2,7 @@ import React from 'react';
 import Todos from './pages/Todos';
 import Login from './pages/Login';
 import NavigationBar from './components/NavigationBar';
+import AuthProvider from './AuthProvider';
 import {
   BrowserRouter,
   Switch,
@@ -11,15 +12,17 @@ import {
 const App:React.FC = () => {
 
   return (
-    <BrowserRouter>
-      
-      <NavigationBar />
+    <AuthProvider>
+      <BrowserRouter>
+        
+        <NavigationBar />
 
-      <Switch>
-        <Route path="/" exact component={ Todos } />
-        <Route path="/login" exact component={ Login } />
-      </Switch>
-    </BrowserRouter>
+        <Switch>
+          <Route path="/" exact component={ Todos } />
+          <Route path="/login" exact component={ Login } />
+        </Switch>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
