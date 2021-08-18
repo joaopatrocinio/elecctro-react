@@ -59,8 +59,12 @@ const TodoList:React.FC = () => {
                     <TodoItem key={todo.id} id={todo.id} state={todo.state} description={todo.description}/>
                 ))}
            </div>
-            { todos.length === 0 && 
+            { todos.length === 0 && isAuthenticated && 
                 <p className="text-center mt-2">Nothing to see here...</p>
+            }
+
+            { !isAuthenticated &&
+                <p className="text-center mt-2">Login to see your to-do list...</p>
             }
 
            <div className="flex flex-row items-center gap-2 mt-4">

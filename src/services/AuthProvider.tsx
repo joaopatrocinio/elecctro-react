@@ -76,6 +76,9 @@ const AuthProvider: FC = ({ children }) => {
             setToken(token);
             setIsAuthenticated(true);
         }
+        else {
+            alert('Incorrect credentials.');
+        }
         
     }
 
