@@ -9,3 +9,19 @@ The application should allow the user to;
 - Add an item to the list.
 - Edit an item on the list (i.e., change its description or mark it as complete).
 - Remove an item from the list.
+
+## Instructions
+
+1. Install dependencies
+```
+npm install
+```
+
+2. Run server
+```
+npm start
+```
+
+This application was bootstrapped with [`create-react-app`](https://create-react-app.dev/).
+
+For more commands and information check the official documentation.

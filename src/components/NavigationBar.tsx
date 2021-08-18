@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { AuthContext } from '../AuthProvider';
+import { AuthContext } from '../services/AuthProvider';
 import { AuthContextState } from '../types';
 import './NavigationBar.css';
 
@@ -26,6 +26,7 @@ const NavigationBar:React.FC = () => {
                     { !isAuthenticated && 
                         <>
                             <Link to="/login">Login</Link>
+                            <Link to="/signup">Signup</Link>
                         </>
                     }
                     { isAuthenticated &&

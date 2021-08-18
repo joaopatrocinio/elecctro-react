@@ -1,5 +1,6 @@
-import React, { createContext, useState, FC } from "react";
-import { GetTodoQuery, Todo, TodosContextState } from "./types";
+import React, { createContext, useState, FC, useContext } from "react";
+import { AuthContext } from "./AuthProvider";
+import { AuthContextState, GetTodoQuery, Todo, TodosContextState } from "../types";
 
 const contextDefaultValues: TodosContextState = {
     todos: [],
@@ -19,11 +20,14 @@ const TodoProvider: FC = ({ children }) => {
     const [todos, setTodos] = useState<Todo[]>(contextDefaultValues.todos);
     const [query, setQuery] = useState<GetTodoQuery>(contextDefaultValues.query);
 
+    const { token } = useContext<AuthContextState>(AuthContext);
+
     const addTodo = async (newTodo: Todo) => {
         await fetch("http://localhost:3001/todos", {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             },
             method: 'POST',
             body: JSON.stringify(newTodo)
@@ -36,7 +40,8 @@ const TodoProvider: FC = ({ children }) => {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             }
         })
         refreshTodos(query);
@@ -49,7 +54,8 @@ const TodoProvider: FC = ({ children }) => {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(todo)
         })
@@ -61,11 +67,17 @@ const TodoProvider: FC = ({ children }) => {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             }
         })
         const todos = await response.json();
-        setTodos(todos);
+        if (response.status === 200) {
+            setTodos(todos);
+        }
+        else {
+            setTodos([]);
+        }
     }
 
     return (

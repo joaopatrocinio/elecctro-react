@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { TodoContext } from '../TodoProvider';
+import { TodoContext } from '../services/TodoProvider';
 import { Todo, TodosContextState } from '../types';
 
 const TodoItem:React.FC<Todo> = ({ id, state, description }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import CreateTodo from '../components/CreateTodo';
 import TodoList from '../components/TodoList';
-import TodoProvider from '../TodoProvider';
+import TodoProvider from '../services/TodoProvider';
 
 const Todos:React.FC = () => {
 

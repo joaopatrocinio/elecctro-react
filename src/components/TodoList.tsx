@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TodoContext } from '../TodoProvider';
-import { TodosContextState } from '../types';
+import { AuthContext } from '../services/AuthProvider';
+import { TodoContext } from '../services/TodoProvider';
+import { AuthContextState, TodosContextState } from '../types';
 import TodoItem from './TodoItem';
 
 const TodoList:React.FC = () => {
 
     const { todos, refreshTodos, query, setQuery } = useContext<TodosContextState>(TodoContext);
+    const { isAuthenticated } = useContext<AuthContextState>(AuthContext);
 
     const [hideCompleted, setHideCompleted] = useState<boolean>(false);
     const [orderBy, setOrderBy] = useState<string>('Date');
 
-    // Load To-do's into state
+    // Load To-do's into state at startup and also after Auth action
     useEffect(() => {
         refreshTodos(query);
-    }, []);
+    }, [isAuthenticated]);
 
     // Toggle hide completed
     const handleChange:React.ChangeEventHandler<HTMLInputElement> = () => {

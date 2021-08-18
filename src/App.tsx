@@ -1,8 +1,9 @@
 import React from 'react';
 import Todos from './pages/Todos';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import NavigationBar from './components/NavigationBar';
-import AuthProvider from './AuthProvider';
+import AuthProvider from './services/AuthProvider';
 import {
   BrowserRouter,
   Switch,
@@ -18,6 +19,7 @@ const App:React.FC = () => {
         <Switch>
           <Route path="/" exact component={ Todos } />
           <Route path="/login" exact component={ Login } />
+          <Route path="/signup" exact component={ Signup } />
         </Switch>
       </BrowserRouter>
     </AuthProvider>

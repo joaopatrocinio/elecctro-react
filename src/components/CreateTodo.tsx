@@ -1,6 +1,6 @@
 import logo from '../logo.svg';
 import React, { useContext, useState } from 'react';
-import { TodoContext } from '../TodoProvider';
+import { TodoContext } from '../services/TodoProvider';
 import { TodosContextState } from '../types';
 
 const CreateTodo:React.FC = () => {
