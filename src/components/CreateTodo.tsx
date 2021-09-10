@@ -1,12 +1,19 @@
 import logo from '../logo.svg';
-import React, { useContext, useState } from 'react';
-import { TodoContext } from '../services/TodoProvider';
-import { TodosContextState } from '../types';
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { addTodo } from '../api/todos/requests';
 
 const CreateTodo:React.FC = () => {
 
     const [newTodo, setNewTodo] = useState<string>('');
-    const { addTodo } = useContext<TodosContextState>(TodoContext);
+
+    const queryClient = useQueryClient();
+
+    const addTodoMutation = useMutation(addTodo, {
+        onSuccess: () => {
+          queryClient.invalidateQueries('todos')
+        },
+    })
 
     const handleChange:React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setNewTodo(e.target.value);
@@ -16,9 +23,9 @@ const CreateTodo:React.FC = () => {
         e.preventDefault()
 
         if (newTodo !== '') {
-            addTodo({
+            addTodoMutation.mutate({
                 description: newTodo
-            });
+            })
             setNewTodo('');
         }
 

@@ -1,21 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import { AuthContext } from '../services/AuthProvider';
-import { TodoContext } from '../services/TodoProvider';
-import { AuthContextState, TodosContextState } from '../types';
+import { AuthContextState, GetTodoQuery } from '../types';
 import TodoItem from './TodoItem';
+import { getTodos } from '../api/todos/requests';
 
 const TodoList:React.FC = () => {
 
-    const { todos, refreshTodos, query, setQuery } = useContext<TodosContextState>(TodoContext);
     const { isAuthenticated } = useContext<AuthContextState>(AuthContext);
 
     const [hideCompleted, setHideCompleted] = useState<boolean>(false);
     const [orderBy, setOrderBy] = useState<string>('Date');
+    const [query, setQuery] = useState<GetTodoQuery>({ filter: 'ALL', orderBy: 'CREATED_AT' });
 
-    // Load To-do's into state at startup and also after Auth action
+    const queryClient = useQueryClient();
+
+    //@ts-ignore
+    const { data, status, error, isSuccess } = useQuery(['todos', query], getTodos, {
+        enabled: !!isAuthenticated
+    });
+
     useEffect(() => {
-        refreshTodos(query);
-    }, [isAuthenticated]);
+        queryClient.invalidateQueries('todos');
+    }, [query]);
 
     // Toggle hide completed
     const handleChange:React.ChangeEventHandler<HTMLInputElement> = () => {
@@ -23,7 +30,6 @@ const TodoList:React.FC = () => {
         const q = {...query};
         q.filter = !hideCompleted ? 'INCOMPLETE' : 'ALL';
         setQuery(q);
-        refreshTodos(q);
     }
 
     const handleFilterChange:React.MouseEventHandler<HTMLHeadingElement> = () => {
@@ -33,21 +39,18 @@ const TodoList:React.FC = () => {
             q.orderBy = 'DESCRIPTION';
             setQuery(q);
             setOrderBy('A-Z');
-            refreshTodos(q);
         }
         else if (orderBy === 'A-Z') {
             const q = {...query};
             q.orderBy = 'DESCRIPTION-REVERSE';
             setQuery(q);
             setOrderBy('Z-A');
-            refreshTodos(q);
         }
         else if (orderBy === 'Z-A') {
             const q = {...query};
             q.orderBy = 'CREATED_AT';
             setQuery(q);
             setOrderBy('Date');
-            refreshTodos(q);
         }
     }
 
@@ -55,11 +58,13 @@ const TodoList:React.FC = () => {
         <div className="bg-gray-100 p-4">
             <h3 className="border-b-2 border-gray-600 pb-2 cursor-pointer select-none" onClick={handleFilterChange}><b>Tasks</b> - Ordering by <u>{ orderBy }</u></h3>
             <div className="divide-y-2 divide-gray-400 divide-solid">
-                { todos.map(todo => (
+                {/*@ts-ignore*/}
+                { isAuthenticated && isSuccess && data.map(todo => (
                     <TodoItem key={todo.id} id={todo.id} state={todo.state} description={todo.description}/>
                 ))}
-           </div>
-            { todos.length === 0 && isAuthenticated && 
+            </div>
+            {/*@ts-ignore*/}
+            { isSuccess && data.length === 0 && isAuthenticated && 
                 <p className="text-center mt-2">Nothing to see here...</p>
             }
 

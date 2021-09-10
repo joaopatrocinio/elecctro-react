@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
-import { TodoContext } from '../services/TodoProvider';
-import { Todo, TodosContextState } from '../types';
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { removeTodo, updateTodo } from '../api/todos/requests';
+import { Todo } from '../types';
 
 const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
 
@@ -8,20 +9,32 @@ const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [newDescription, setNewDescription] = useState<string>(description);
 
-    const { removeTodo, updateTodo } = useContext<TodosContextState>(TodoContext);
+    const queryClient = useQueryClient();
+
+    const updateTodoMutation = useMutation(updateTodo, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('todos')
+        },
+    })
+
+    const removeTodoMutation = useMutation(removeTodo, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('todos')
+        },
+    })
 
     const handleOnChange = () => {
         setIsChecked(!isChecked);
-        updateTodo({
+        updateTodoMutation.mutate({
             id,
             state: !isChecked ? 'COMPLETE' : 'INCOMPLETE',
             description
-        });
+        })
     };
 
     const handleRemove:React.MouseEventHandler<HTMLButtonElement> = () => {
         if (id !== undefined)
-        removeTodo(id);
+        removeTodoMutation.mutate(id);
     }
 
     const handleUpdate:React.MouseEventHandler<HTMLButtonElement> = () => {
@@ -29,7 +42,7 @@ const TodoItem:React.FC<Todo> = ({ id, state, description }) => {
             setIsEditing(true);
         }
         else {
-            updateTodo({
+            updateTodoMutation.mutate({
                 id,
                 state,
                 description: newDescription

@@ -9,20 +9,27 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+const queryClient = new QueryClient();
 
 const App:React.FC = () => {
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <NavigationBar />
-        <Switch>
-          <Route path="/" exact component={ Todos } />
-          <Route path="/login" exact component={ Login } />
-          <Route path="/signup" exact component={ Signup } />
-        </Switch>
-      </BrowserRouter>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <NavigationBar />
+          <Switch>
+            <Route path="/" exact component={ Todos } />
+            <Route path="/login" exact component={ Login } />
+            <Route path="/signup" exact component={ Signup } />
+          </Switch>
+        </BrowserRouter>
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
